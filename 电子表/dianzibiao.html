@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		#clock{
+			width: 800px;
+			height: 400px;
+			border:1px solid blue;
+		}
+		#date{
+			width: 300px;
+			height: 150px;
+			background: pink;
+		}
+		#time{
+			width: 400px;
+			height: 200px;
+			border:1px solid blue;
+		}
+		#time img{
+			width: 15%;
+		}
+		#day{
+			width: 100px;
+			height: 30px;
+			background: yellow;
+		}
+	</style>
+</head>
+<body>
+	<div id="clock">
+		<div id="date"></div>
+		<div id="time"></div>
+		<div id="day"></div>
+	</div>
+	<button id="btn">报时</button>
+	<!-- <audio src="img/clock.mp3" controls id="aud"></audio> -->
+	<audio src="" id="aud"></audio>
+	
+<script type="text/javascript">
+	function $(id){
+		return document.getElementById(id);
+	}
+	var mon=["一","二","三","四","五","六","七","八","九","十","十一","十二"];
+	var week=["日","一","二","三","四","五","六"];
+	clock();
+	function clock(){
+		var d=new Date();
+		var y=d.getFullYear();
+		var m=d.getMonth();
+		var r=d.getDate();
+		var w=d.getDay();
+		// console.log(y)
+		// console.log(mon[m])
+		// console.log(r);
+		$("date").innerHTML=y+"年<br>"+mon[m]+"月<br>"+r+"日";
+		$('day').innerHTML="星期"+week[w];
+
+		var h=d.getHours()<10?"0"+d.getHours():d.getHours();//三元运算符拼接两位数
+		var min=d.getMinutes()<10?"0"+d.getMinutes():d.getMinutes();
+		var s=d.getSeconds()<10?"0"+d.getSeconds():d.getSeconds();
+		console.log(s)
+
+		$('time').innerHTML=getNum(h)+":"+getNum(min)+":"+getNum(s);
+
+
+		//获取电子表的声音
+		// $('aud').play();
+	}
+	//http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=2&text=%E4%BD%A0%E8%A6%81%E8%BD%AC%E6%8D%A2%E7%9A%84%E6%96%87%E5%AD%97
+	$('btn').onclick=function(){
+		var d=new Date();
+		var h=d.getHours()>12?"下午"+(d.getHours()-12):"上午"+d.getHours();
+		var m=d.getMinutes();
+		$('aud').src="http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=4&text=现在时刻:"+h+"时,"+m+"分";
+		$('aud').play();
+	}
+
+	setInterval(clock,1000);
+
+	function getNum(num){
+		var num1=String(num).substr(0,1);
+		var num2=String(num).substr(1,1);
+		// console.log(num1);
+		// console.log(num2);
+		return "<img src='img/"+num1+".png'><img src='img/"+num2+".png'>";
+	}
+</script>
+</body>
+</html>

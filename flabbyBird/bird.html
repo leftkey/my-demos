@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>flappy bird</title>
+	<style type="text/css">
+		#box{
+			width: 800px;
+			height:600px;
+			margin: 0 auto;
+			background: lightgreen;	
+			position: relative;	
+			overflow: hidden;
+		}
+		#bird{
+			width: 50px;
+			height: 50px;
+			background: url(bird1.png) no-repeat;
+			position: absolute;
+			float: left;
+			left:200px;
+			top:200px;
+			z-index: 100;
+		}
+		.zhu{
+			width:50px;
+			height:600px;
+			background: #000;
+			position: absolute;
+			left:800px;
+
+		}
+		#gun{
+			width:800px;
+			height: 600px;
+			/* border: 1px solid red; */
+			/* overflow-x: scroll; */
+			/* overflow-y:hidden; */
+			/* overflow: hidden; */
+		}
+		#zong{
+			width:100%;
+			/* border: 1px solid red; */
+			float: left;
+		}
+
+		.tongdao{
+			width: 50px;
+			height: 100px;
+			background: lightgreen;
+			position: relative;
+			float: left;
+			top: 100px;
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<div id="bird"></div>
+		<div id="gun">
+			<div id="zong">
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var box=document.getElementById('box');
+	var gun=document.getElementById('gun');
+	var zong=document.getElementById('zong');
+	var zhus=document.getElementsByClassName('zhu');
+	var tongdao=document.getElementsByClassName('tongdao');
+	var speedZhu=1;//柱子便宜速度
+	var isStart = true;//游戏是否开始
+	var fenshu=0;
+
+
+	// 创建柱子移动的函数
+	function createZhu(){
+		var zhu = document.createElement('div');
+		zhu.setAttribute('class','zhu');
+		zong.appendChild(zhu);
+		var space=document.createElement('div');
+		space.setAttribute('class','tongdao');
+		zhu.appendChild(space);
+		// 确定通道位移范围
+		var spaceTop=(Math.floor(Math.random()*1000000000)%9)*50+50;
+		console.log(spaceTop)
+		space.style.top=spaceTop+"px";
+
+		//设置定时器让柱子移动起来
+		var moveZhu=setInterval(function(){
+			//柱子距离左边框的偏移量
+			var l=parseInt(zhu.offsetLeft);
+			//定义新的偏移量
+			var newL=l-speedZhu;
+			//判断柱子是否到达尽头
+			if(newL<=-50){
+				//到达尽头,清除定时器,删除该元素
+				clearInterval(moveZhu);
+				zong.removeChild(zhu);
+			}
+			// 设置柱子的位置
+			zhu.style.left=newL+'px';
+
+			//判断小鸟是否发生碰撞
+			if(newL==250){//小鸟的位置
+				// 判断通道的位置和小鸟的位置
+				//小鸟头部位置和尾部位置
+				var birdHead=parseInt(bird.offsetTop);
+				var birdfoot=birdHead+50;
+				//管道底部
+				var spaceBottom=spaceTop+100;
+
+				if(birdHead<spaceTop || birdfoot>spaceBottom){//触碰到通道以外的管道
+					//GAME OVER
+					alert("GAME OVER"+"====>分数是"+fenshu);
+					window.location.reload();
+				}
+				fenshu++;
+			}
+
+		},10);
+
+			
+
+	}
+	createZhu();
+
+	//自动产生柱子
+	setInterval(function(){
+		//检测游戏是否开始
+		if(!isStart) return;
+		createZhu();
+	},2000);
+	
+	
+
+
+	var x=0;
+	var timer=null;
+	var flyTimer=null;
+	var bird=document.getElementById('bird');
+
+
+//鼠标操作
+	box.onmousedown=function(){//按下鼠标扑腾
+		clearInterval(downTimer);
+		//小鸟向上扑腾
+		noFly();
+		oneFly();
+		//小鸟点击翻滚
+		stopFan()
+		oneFan();
+		// console.log(bird.offsetTop)
+	}
+
+	box.onmouseup=function(){//松开鼠标坠落
+		downTimer=setInterval(flyDown,1);
+	}
+	//空格键操作
+	window.onkeydown=function (en){
+			var e=en || window.event;
+			if(e.keyCode==32){
+			clearInterval(downTimer);
+					//小鸟向上扑腾
+					noFly();
+					oneFly();
+					//小鸟点击翻滚
+					stopFan()
+					oneFan();
+			}
+	}
+	window.onkeyup=function(en){
+		var e=en || window.event;
+			if(e.keyCode==32){
+				downTimer=setInterval(flyDown,1);
+			}
+	}
+	/*小鸟坠落start*/
+		function flyDown(){
+			// console.log(bird.offsetTop);
+			if(bird.offsetTop>=575){
+				clearInterval(downTimer);
+				//GAME OVER
+				alert("GAME OVER"+"====>分数是"+fenshu);
+				window.location.reload();
+			}else{
+				bird.style.top=bird.offsetTop+1+'px';
+			}
+			
+		}
+		var downTimer=setInterval(flyDown,1);
+	/*小鸟坠落end*/
+
+	/*小鸟扑腾start*/
+	function fly(){
+		if(bird.offsetTop<=-25){
+			clearInterval(downTimer);
+			//GAME OVER
+			alert("GAME OVER"+"====>分数是"+fenshu);
+			window.location.reload();
+		}else{
+			bird.style.top=bird.offsetTop-2+'px';
+		}
+	}
+	function oneFly(){
+		flyTimer=setInterval(fly,1);
+		setTimeout(noFly,150);
+	}
+	function noFly(){
+		clearInterval(flyTimer);
+	}
+	/*小鸟扑腾end*/
+	
+	/*小鸟翻滚start*/
+	function fan(){
+		bird.style.transform="rotate("+x+"deg)";
+		x--;	
+	}
+	function oneFan(){
+		timer=setInterval(fan,1);
+		setTimeout(noFan,250);
+	}
+	function noFan(){
+		clearInterval(timer);
+		timer=setInterval(fanFan,1);
+		setTimeout(stopFan,250);
+	}
+
+	function fanFan(){
+		bird.style.transform="rotate("+x+"deg)";
+		x++;
+	}
+	function stopFan(){
+		clearInterval(timer);
+		bird.style.transform="rotate("+x+"deg)";
+		x=0;
+	}
+	/*小鸟翻滚end*/
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	
+
+	<script type="text/javascript">
+		 
+
+		function func(str){
+			var n=0;
+			var arr=[];
+			function getArr(str,n){
+						var a=str.indexOf(" ",n)
+						var b=str.slice(n,a)
+						if(a==-1){//没有空格了
+							b=str.slice(n,str.length)
+							arr.unshift(b)
+						}else{//接着走
+							arr.unshift(b)
+							getArr(str,a+1)
+						}
+						return arr;
+					}
+			var newArr=getArr(str,n);
+			var newStr="";
+			for(var i=0;i<newArr.length;i++){
+				// if(i==newArr.length-1){
+				// 	newStr +=newArr[i];
+				// }else{
+				// 	newStr +=newArr[i]+" ";
+				// }
+				newStr += i==newArr.length-1?newArr[i]:newArr[i]+" ";
+			}
+			return newStr;
+		}
+
+
+		
+
+
+		console.log(func("I am a handsome boy!"))
+
+	</script>
+
+</body>
+</html>

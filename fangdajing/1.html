@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			padding: 0;
+			margin: 0;
+			list-style: none;
+		}
+		#small{
+			width: 400px;
+			height: 400px;
+			border: 1px solid #ccc;
+			position: absolute;
+			left: 200px;
+			top: 200px;
+		}
+		#big{
+			width: 400px;
+			height: 400px;
+			border: 1px solid #ccc;
+			position: absolute;
+			left: 650px;
+			top: 200px;
+			overflow: hidden;
+			display: none;
+		}
+		#bigImg{
+			position: absolute;
+		}
+		#move{
+			width:160px; 
+			height: 160px;
+			/* 400/1000=2/5
+				400* 2/5=160
+			 */
+			background: url(bg.png);
+			position: absolute;
+			left: 0;
+			top: 0;
+			display: none;
+		}
+		ul{
+			width: 450px;
+			height: 200px;
+			position: absolute;
+			top:650px;
+			left: 200px;
+		}
+		ul li{
+			width:90px;
+			height:90px;
+			border: 1px solid #ccc;
+			float: left;
+			margin-right: 10px;
+			padding: 3px;
+		}
+	</style>
+</head>
+<body>
+	
+	<div id="small">
+		<img src="0.jpg" alt="" width="100%" id="smallImg">
+		<div id="move"></div>
+	</div>
+
+	<div id="big">
+		<img src="0.jpg" alt="" id="bigImg">
+	</div>
+
+	<ul>
+		<li><img src="0.jpg" alt="" width="100%"></li>
+		<li><img src="1.jpg" alt="" width="100%"></li>
+		<li><img src="2.jpg" alt="" width="100%"></li>
+		<li><img src="3.jpg" alt="" width="100%"></li>
+	</ul>
+	<script type="text/javascript">
+	function $(id){
+		return document.getElementById(id);
+	}
+	//鼠标移出small消失move
+	$('small').onmouseout=function(){
+		$('move').style.display="none";
+		$('big').style.display="none";
+	}
+
+	//鼠标在small内移动
+	$('small').onmousemove=function(en){
+		var e=en || window.event;
+		// var x=e.clientX;	//相对于窗口的距离
+		// var y=e.clientY;
+		//将move显示
+		$('move').style.display="block";
+		//将big显示
+		$('big').style.display="block";
+
+		var x=e.clientX+document.body.scrollLeft;
+		var y=e.clientY+document.body.scrollTop;
+		// var x=e.pageX;
+		// var y=e.pageY;
+		var smallL=$('small').offsetLeft;
+		var smallT=$('small').offsetTop;
+		var moveW=$('move').offsetWidth;
+		var moveH=$('move').offsetHeight;
+		var moveL=x-smallL-(moveW/2);
+		var moveT=y-smallT-(moveH/2);
+		console.log(moveL)
+		//给move限制范围
+		//左和上的范围
+		if(moveL<0){
+			moveL=0;
+		}
+		if(moveT<0){
+			moveT=0;
+		}
+		//右和下的范围
+		var maxL=$('small').offsetWidth-moveW;
+		var maxT=$('small').offsetHeight-moveH;
+		if(moveL>maxL){
+			moveL=maxL;
+		}
+		if(moveT>maxT){
+			moveT=maxT;
+		}
+
+
+		$('move').style.left=moveL+'px';
+		$('move').style.top=moveT+'px';
+		$('move').style.cursor='move';
+
+
+		//计算放大比例
+		var a=moveL/($('small').offsetWidth);
+		var b=moveT/($('small').offsetHeight);
+
+		$('bigImg').style.left=-($('bigImg').offsetWidth)*a+"px";
+		$('bigImg').style.top=-($('bigImg').offsetHeight)*b+'px';
+	}
+
+	//换图操作
+	var lis=document.getElementsByTagName('li');
+	for(var i=0;i<lis.length;i++){
+		lis[i].onclick=function(){
+			$('smallImg').src=this.children[0].src;
+			$('bigImg').src=this.children[0].src;
+		}
+	}
+	</script>
+</body>
+</html>

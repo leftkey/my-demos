@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>You must love me</title>
+</head>
+<body>
+	<h1 style="position:absolute; left:220px; top:175px; width:auto; height:210px;">Do you love me?</h1>
+	<div id="by" style="position:absolute; left:285px; top:235px; width:210px; 
+	height:210px;">
+		<input type="button" value=" YES " onclick="f1()" />
+	</div>
+	<div id="bn" style="position:absolute; left:360px; top:235px; width:210px; height:210px;">
+		<input type="button" value="  NO  " onmouseover="f()" />
+	</div>
+<script type="text/javascript">
+	var By=document.getElementById("by");
+	var Bn=document.getElementById("bn");
+	var flag=1;
+	function f1(){
+		alert("Yes. you are right ")
+	}
+	function f(){
+		switch(flag){
+			case 1:
+			Bn.style.top=90+"px";
+			Bn.style.left=500+"px";
+			flag=2;
+			break;
+			case 2:
+			Bn.style.top=90+"px";
+			Bn.style.left=50+"px";
+			flag=3;
+			break;
+			case 3:
+			Bn.style.top=235+"px";
+			Bn.style.left=360+"px";
+			flag=1;
+			break;
+		}	
+	}
+</script>
+</body>
+</html 

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		div{
+			height:800px;
+			border:1px solid #333;
+			margin-bottom:10px; 
+			font-size: 50px;
+		}
+		.box1{
+			background: pink;
+		}
+		.box2{
+			background: purple;
+		}
+		.box3{
+			background: orange;
+		}
+		.box4{
+			background: blue;
+		}
+		.box5{
+			background: gray;
+		}
+		.box6{
+			background: purple;
+		}
+		.side{
+			width:60px;
+			height:432px;
+			border:1px solid #333;
+			position: fixed;
+			left:10px;
+			bottom:20px;
+			/* display: none; */
+		}
+		a{
+			display: block;
+			line-height: 50px;
+			border:1px solid #ccc;
+			text-decoration: none;
+			font-size: 20px;
+			color:#000;
+			padding:10px 0px;
+			text-align: center;
+		}
+		a.active{
+			background: red;
+			color:white;
+		}
+		div.banner{
+			height:500px;
+			background: yellow;
+		}
+	</style>
+</head>
+<body>
+	<div class="banner">
+		我的楼层我的楼
+	</div>
+	<div class="box1">1楼</div>
+	<div class="box2">2楼</div>
+	<div class="box3">3楼</div>
+	<div class="box4">4楼</div>
+	<div class="box5">5楼</div>
+	<div class="box6">6楼</div>
+	<div class="side">
+		<a href="javascript:void(0)">1楼</a>
+		<a href="javascript:void(0)">2楼</a>
+		<a href="javascript:void(0)">3楼</a>
+		<a href="javascript:void(0)">4楼</a>
+		<a href="javascript:void(0)">5楼</a>
+		<a href="javascript:void(0)">6楼</a>
+	</div>
+
+
+	<script type="text/javascript" src="jquery-1.12.4.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		$(".side a").hover(
+			function(){	//改变楼层颜色
+				$(this).addClass('active')
+			},
+			function(){
+				$(this).removeClass('active')
+			}
+		).click(function(){
+			//固定楼层颜色
+			changColor($(this).index())
+			// $(window).scrollTop(1000);
+			$('body,html').animate({
+				"scrollTop":getTop($(this).index())		//
+			},500)
+		})
+	})
+
+	$(function(){
+		$(window).scroll(function(){
+			// $(this).scrollTop();
+			console.log($(this).scrollTop())
+			if($(this).scrollTop()>4575){
+				changColor(5)
+			}else if($(this).scrollTop()>3760){
+				changColor(4)
+			}else if($(this).scrollTop()>2950){
+				changColor(3)
+			}else if($(this).scrollTop()>2135){
+				changColor(2)
+			}else if($(this).scrollTop()>1330){
+				changColor(1)
+			}else if($(this).scrollTop()>517){
+				$('.side').show();
+				changColor(0)
+			}else{
+				$('.side').hide();
+			}
+		})
+		
+	})
+
+
+
+	function changColor(n){
+		console.log(n)
+		$('.side a').eq(n).css({
+			"background":"red",
+			"color":"white"
+			}).siblings().css({
+			"background":"",
+			"color":""
+			})
+	}
+
+	function getTop(n){	//传相对应的楼层,返回该楼层距离顶部的高度
+		switch(n){
+			case 0:return 517;
+			break;
+			case 1:return 1330;
+			break;
+			case 2:return 2135;
+			break;
+			case 3:return 2950;
+			break;
+			case 4:return 3760;
+			break;
+			case 5:return 4575;
+			break;
+		}
+	}
+	</script>
+</body>
+</html>

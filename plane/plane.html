@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>打飞机</title>
+	<style type="text/css">
+		#game{
+			width:400px;
+			height:500px;
+			border:solid 1px #ddd;
+			margin:0 auto;
+			position:relative;
+			overflow:hidden;
+			background:url(./images/bg.jpg);
+		}
+		#me{
+			position:absolute;
+			left:0px;
+			bottom:0px;
+			width:106px;
+			height:76px;
+		}
+		.diji{
+			width:116px;
+			height:82px;
+			position:absolute;
+		}
+		.egg{
+			width:10px;
+			height:35px;
+			position:absolute;
+		}
+		.boom{
+			width:116px;
+			height:82px;
+			display:none;
+			position:absolute;
+		}
+		#score{
+			position:
+			absolute;
+			right:0px;
+			top:0px;
+			color:white;
+		}
+		#start{
+			width:150px;
+			height:50px;
+			text-align:center;
+			border:solid 1px #ddd;
+			line-height:50px;position:
+			absolute;left:125px;
+			top:200px;
+			cursor:pointer;
+			background:black;
+			opacity:0.5;
+			color:white;
+			z-index:1000;
+		}
+	</style>
+
+</head>
+<body>
+	<div id="game">
+		<!-- <div class="diji">		
+			<img src="./images/e1.png" alt="">
+		</div> -->
+		<!-- <div class="egg">
+			<img src="./images/b.png" alt="">
+		</div> -->
+		<div id="me">
+			<img src="./images/me.png" alt="">
+		</div>
+		<div id="score">
+			<div class="s"></div>
+		</div>
+		<div id="start" onclick="gameStart(this)">
+			开始游戏
+		</div>
+	</div>
+	<div class="boom" id="boom"><img src="./images/boom.gif" width="100%" alt=""></div>
+	<script type="text/javascript">
+
+	//全局变量
+	var step=1;//设置步长
+	var moveTime=null;//设置移动定时器
+
+
+	function $(id){return document.getElementById(id);}
+	//初始化设定
+	function init(){
+		var gameW=$('game').offsetWidth;//game盒子的宽度
+		var myW=$('me').offsetWidth;	//我方飞机的宽度
+		var newW=(gameW-myW)/2;
+		$('me').style.left=newW+"px";//将飞机初始化在game中间
+	}
+	init();
+
+	window.onkeyup=function(){
+		clearInterval(moveTime);//键盘抬起清除移动定时器
+	}
+
+	function createDiji(){	//创建敌机
+		var img=document.createElement('img');//创建敌机img
+		img.src="images/e1.png";//添加img路径
+		var diji=document.createElement('div');
+		diji.className="diji";//className向元素对象添加class属性
+		diji.appendChild(img);//创建敌机父元素
+		$('game').appendChild(diji);
+		var maxL=$('game').offsetWidth-diji.offsetWidth;
+		diji.style.left=getrand(0,maxL)+"px";//随机创建敌机
+		var dijiTime=setInterval(function(){
+			var newB=diji.offsetTop+1;			//敌机速度
+			diji.style.top=newB+"px";
+			if(diji.offsetTop>=$('game').offsetHeight){
+				clearInterval(dijiTime);
+				$('game').removeChild(diji);
+			}
+		},10)
+	}
+	
+	function gameStart(start){
+		var num=0;
+		start.style.display="none";
+		setInterval(createDiji,1000);
+		setInterval(function(){
+			$('game').style.backgroundPosition="0 "+num+"px";
+			num++;
+		},100)
+	}
+	// gameStart();
+
+	function getrand(n,m){			//创建随机数函数
+		return Math.floor(Math.random()*100000000%(m-n))+n;
+	}
+
+	function fire(){	//开火
+		var img=document.createElement('img');//创建炮弹img
+		img.src="images/b.png";//添加img路径
+		var eggDiv=document.createElement('div');
+		eggDiv.className="egg";//className向元素对象添加class属性
+		eggDiv.appendChild(img);//创建炮弹父元素
+		$('game').appendChild(eggDiv);
+
+
+
+		//获取机头的位置
+		var myL=$('me').offsetLeft;
+		var myW=$('me').offsetWidth;
+		var newW=(myW/2-5)+myL;			//获取炮弹在机头左右的位置
+		// console.log(newW);
+		var myT=$('me').offsetTop;
+
+		eggDiv.style.left=(newW+1.5)+"px";//炮弹出现的Left位置
+		eggDiv.style.top=(myT-30)+'px';	//炮弹出现的top位置
+			
+		var eggTime=setInterval(function(){
+			var moveT=eggDiv.offsetTop;
+			eggDiv.style.top=moveT-3+"px";
+			if(moveT<=-30){//当炮弹距离顶部小于-30时
+				clearInterval(eggTime);	//清除该炮弹的定时器
+				$('game').removeChild(eggDiv);//移除该炮弹
+			}
+			var dijis=document.getElementsByClassName('diji');
+			for(var i=0;i<dijis.length;i++){
+				var dijiL=dijis[i].offsetLeft;//敌机距离左侧边框的距离
+				var dijiR=dijis[i].offsetWidth+dijiL; //敌机右侧距离左侧边框的距离
+				var dijiT=dijis[i].offsetTop;	//敌机机尾距离顶部边框的距离
+				var dijiB=dijis[i].offsetHeight+dijiT;	//敌机机头距离顶部边框的距离
+
+				if(eggDiv.offsetLeft<dijiR 
+					&& (eggDiv.offsetLeft+eggDiv.offsetWidth)>dijiL
+					&& eggDiv.offsetTop<dijiB
+					&& (eggDiv.offsetTop+eggDiv.offsetHeight)>dijiT
+					){//满足敌机爆炸条件
+					// console.log("boom")
+					clearInterval(eggTime);	//清除该炮弹的定时器
+					$('game').removeChild(eggDiv);//移除该炮弹
+					$('game').removeChild(dijis[i]);//敌机移除该敌机
+					var newBoom=$('boom').cloneNode(true);//克隆该爆炸节点
+					newBoom.style.display="block";//显示
+					$('game').appendChild(newBoom);//添加该爆炸
+					//爆炸位置
+					newBoom.style.left=dijiL+'px';
+					newBoom.style.top=dijiT+'px';
+
+					setTimeout(function(){
+						$('game').removeChild(newBoom);
+					},500)
+				}
+			}
+		},10)
+	}
+
+
+	function moveL(){
+		clearInterval(moveTime);	
+		moveTime=setInterval(function(){//设置向左移动的定时
+			var myL=$('me').offsetLeft;	//获取我方飞机距离盒子的距离
+			var newL=myL-step;			//通过距离减去步长,获得每次按下←移动距离
+			if(newL<=0){	//当飞机距离左侧边框小于=0时
+				newL=0;			//将飞机贴着左边
+			}
+			$('me').style.left=newL+"px";
+		},10)
+		
+	}
+	function moveR(){
+		clearInterval(moveTime);
+		moveTime=setInterval(function(){
+			var myL=$('me').offsetLeft;
+			var newL=myL+step;		//通过距离减去步长,获得每次按下右键移动距离
+			var maxL=$('game').offsetWidth-$('me').offsetWidth;//获得极限距离
+			if(newL>=maxL){
+				newL=maxL-3;
+			}
+			$('me').style.left=newL+'px';
+		},10)
+
+	}
+
+	window.onkeydown=function(en){
+		var e=en || window.event;
+		// alert(e.keyCode);
+
+		switch(e.keyCode){		//绑定键盘事件
+			case 37:     //按下← 向左移动
+				moveL();
+				break;
+			case 39:     //按下右键 向右移动
+				moveR();
+				break;
+			case 32:     //空格  开火
+				fire();
+		}
+	}
+
+	</script>
+</body>
+</html>

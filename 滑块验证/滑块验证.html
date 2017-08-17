@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			padding: 0;
+			margin: 0;
+		}
+		#login{
+			width: 500px;
+			height: 300px;
+			margin: 300px 300px 10px 210px;
+			border:1px solid red;
+		}
+		#box{
+			width: 400px;
+			height: 40px;
+			margin-top:30px;
+			margin-left: 50px;
+			border: 1px solid #ccc;
+			border-radius: 20px;
+			position: relative;
+		}
+		#move{
+			width: 60px;
+			height: 40px;
+			outline: none;
+			border-radius: 20px;
+			position: absolute;
+			cursor: pointer;
+		}
+		#pic{
+			margin-top: 10px;
+			margin-left: 50px;
+			width: 400px;
+			height:200px;
+			border:1px solid #131;
+			position: relative;
+		}
+		#small{
+			position: absolute;
+			top: 80px;
+			width: 50px;
+			height: 50px;
+			border: 1px solid #fff;
+			overflow: hidden;
+		}
+		#code{
+			width: 50px;
+			height: 50px;
+			background: rgba(0,0,0,.5);
+			border-radius: 3px;
+			box-shadow:0px 0px 5px 5px #E3E3E3;
+			position: absolute;
+			top: 80px;
+		}
+		#moveImg{
+			position: absolute;
+			top: -80px;
+		}
+	</style>
+</head>
+<body>
+	<div id="login">
+		<div id="pic">
+			<div id="code"></div>
+			<img src="1.jpg" height="100%" width="100%" alt="">
+			<div id="small">
+				<img src="1.jpg" height="200" width="400" alt="" id="moveImg">
+			</div>
+		</div>
+		<div id="box">
+			<button id="move"></button>
+		</div>
+
+	</div>
+	<h1></h1>
+	
+
+	<script type="text/javascript" src="jquery-1.12.4.min.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		//默认图片位置
+		var codeL=200;    //假设位置在left 100处
+		$("#code").css("left",codeL);
+		$("#moveImg").css("left",-codeL);
+		$("h1").html("滑至相应位置验证");
+
+
+		$("#move").mousedown(function(event) {
+			var x=event.clientX;	//鼠标点击滑块后在视口上的位置
+			var y=event.clientY;
+			
+			// box距离视口的距离
+			var boxX=$("#box").offset().left - $(window).scrollLeft();
+			var moveX=$("#move").offset().left - $(window).scrollLeft();
+			// 鼠标在move上的距离
+			moveX=x-moveX;
+			$(this).on("mousemove",function(event){  //绑定移动事件
+				x=event.clientX	//鼠标移动的X的位置
+				var moveL=x-boxX-moveX; 	//move距离box边框的X距离
+				if(moveL<=0){
+					moveL=0;
+				}
+				var moveMax=$("#box").width()-$("#move").width();
+				if(moveL>=moveMax){
+					moveL=moveMax;
+				}
+				$("#move").css("left",moveL);//滑块动
+				$("#small").css("left",moveL);
+			})
+		}).mouseup(function(event) {	 //松开不滑
+			$(this).off("mousemove");
+			var smallL=parseFloat($("#small").css("left"));	//获取small此刻位置
+			if(smallL>(codeL-10) && smallL<(codeL+10)){
+				$("h1").html("验证成功").css("color","green"); //验证成功
+				// 将滑块和small对齐
+				$("#move").css("left",codeL);
+				$("#small").css("left",codeL);
+			}else{
+				$("h1").html("验证失败").css("color","red");
+			}
+		}).mouseleave(function(event) {  //移出也不滑
+			$(this).off("mousemove")
+		});
+	})
+	</script>
+</body>
+</html>

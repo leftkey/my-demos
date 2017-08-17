@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		#box{
+			width: 600px;
+			height: 600px;
+			background: url(clock_logo.jpg) no-repeat;
+			/* position: absolute; */
+		}
+
+		#hour{
+			width: 30px;
+			height: 600px;
+			background: url(hour.png) no-repeat;
+			float: left;
+			position: absolute;
+			margin-left: 285px;
+			transform:rotate(0deg);
+		}
+		#min{
+			width: 30px;
+			height: 600px;
+			background: url(minute.png) no-repeat;
+			float: left;
+			position: absolute;
+			margin-left: 285px;
+			transform:rotate(0deg);
+		}
+		#sec{
+			width: 30px;
+			height: 600px;
+			background: url(second.png) no-repeat;
+			float: left;
+			position: absolute;
+			margin-left: 285px;
+			transform:rotate(90deg);
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<div id="hour"></div>
+		<div id="min"></div>
+		<div id="sec"></div>
+	</div>
+	<button id="btn" onclick="btn(1)">滴答模式</button>
+	<button id="btn" onclick="btn(2)">平滑模式</button>
+<script type="text/javascript">
+	var num=1;
+	function btn(n) {
+		if(n!=2){
+			num=1;
+			clock();
+		}else{
+			num=2;
+			clock();
+		}
+	}
+
+
+	function clock(){
+		var nowTime=new Date();
+		var h=nowTime.getHours();
+		var m=nowTime.getMinutes();
+		var s=nowTime.getSeconds();
+		var hm=nowTime.getMilliseconds();
+		var hour=document.getElementById('hour');
+		var min=document.getElementById('min');
+		var sec=document.getElementById('sec');
+		if(h>12){
+			h = h%12;
+		}
+		hour.style.transform="rotate("+(30*(h+(m/60)+(s/3600)))+"deg)";
+		min.style.transform="rotate("+(6*(m+(s/60)))+"deg)";
+		if(num!=2){
+			sec.style.transform="rotate("+(6*s)+"deg)";
+		}else{
+			sec.style.transform="rotate("+(6*(s+(hm/1000)))+"deg)";
+		}
+
+	}	
+// clock()
+	setInterval(clock,1);
+</script>
+</body>
+</html>
